@@ -21,7 +21,18 @@ app.get("/", (req, res) => {
   });
 });
 
+// Middleware to ensure database is connected before processing API requests
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use("/api/v1", require("./routes"));
+
 
 app.use(errorHandler);
 
