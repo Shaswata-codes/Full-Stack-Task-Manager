@@ -64,7 +64,7 @@ const Dashboard = () => {
     const fetchTasks = async () => {
       try {
         setIsLoadingTasks(true)
-        const response = await fetch('http://localhost:4500/api/v1/tasks', {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tasks`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -106,7 +106,7 @@ const Dashboard = () => {
     const token = localStorage.getItem('token')
     try {
       setIsSubmittingTask(true)
-      const response = await fetch('http://localhost:4500/api/v1/tasks', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tasks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ const Dashboard = () => {
     const token = localStorage.getItem('token')
     try {
       const updatedStatus = !task.completed
-      const response = await fetch(`http://localhost:4500/api/v1/tasks/${task._id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tasks/${task._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -169,7 +169,7 @@ const Dashboard = () => {
     if (!window.confirm('Are you sure you want to delete this task?')) return
     const token = localStorage.getItem('token')
     try {
-      const response = await fetch(`http://localhost:4500/api/v1/tasks/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tasks/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -193,7 +193,7 @@ const Dashboard = () => {
     if (!window.confirm('Are you sure you want to delete all completed tasks?')) return
     const token = localStorage.getItem('token')
     try {
-      const response = await fetch('http://localhost:4500/api/v1/tasks/completed', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tasks/completed`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -234,7 +234,7 @@ const Dashboard = () => {
     const token = localStorage.getItem('token')
     try {
       setIsUpdatingTask(true)
-      const response = await fetch(`http://localhost:4500/api/v1/tasks/${editTaskId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tasks/${editTaskId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
