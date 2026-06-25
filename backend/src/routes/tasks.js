@@ -2,19 +2,16 @@ const express = require("express");
 const router = express.Router();
 const Task = require("../models/Task");
 const auth = require("../middleware/auth");
+const { validateTask } = require("../middleware/validate");
 
 // All routes in this file are protected by auth middleware
 router.use(auth);
 
 // @route   POST /api/v1/tasks
 // @desc    Create a new task
-router.post("/", async (req, res) => {
+router.post("/", validateTask, async (req, res, next) => {
   try {
     const { title, description, priority, dueDate, completed } = req.body;
-
-    if (!title) {
-      return res.status(400).json({ message: "Title is required." });
-    }
 
     const newTask = new Task({
       title,
@@ -28,39 +25,36 @@ router.post("/", async (req, res) => {
     const savedTask = await newTask.save();
     res.status(201).json(savedTask);
   } catch (error) {
-    console.error("Create task error:", error);
-    res.status(500).json({ message: "Server error while creating task." });
+    next(error);
   }
 });
 
 // @route   GET /api/v1/tasks
 // @desc    Fetch all tasks of logged-in user
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     const tasks = await Task.find({ owner: req.user.id }).sort({ createdAt: -1 });
     res.json(tasks);
   } catch (error) {
-    console.error("Fetch tasks error:", error);
-    res.status(500).json({ message: "Server error while fetching tasks." });
+    next(error);
   }
 });
 
 // @route   DELETE /api/v1/tasks/completed
 // @desc    Delete all completed tasks of logged-in user
 // Note: Registered before GET /:id and DELETE /:id to prevent route param hijacking
-router.delete("/completed", async (req, res) => {
+router.delete("/completed", async (req, res, next) => {
   try {
     const result = await Task.deleteMany({ owner: req.user.id, completed: true });
     res.json({ message: "Completed tasks deleted successfully.", count: result.deletedCount });
   } catch (error) {
-    console.error("Delete completed tasks error:", error);
-    res.status(500).json({ message: "Server error while deleting completed tasks." });
+    next(error);
   }
 });
 
 // @route   GET /api/v1/tasks/:id
 // @desc    Fetch single task by ID
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const task = await Task.findById(req.params.id);
 
@@ -75,17 +69,16 @@ router.get("/:id", async (req, res) => {
 
     res.json(task);
   } catch (error) {
-    console.error("Fetch single task error:", error);
     if (error.kind === "ObjectId") {
       return res.status(404).json({ message: "Task not found." });
     }
-    res.status(500).json({ message: "Server error while fetching the task." });
+    next(error);
   }
 });
 
 // @route   PUT /api/v1/tasks/:id
 // @desc    Update a task (owner only)
-router.put("/:id", async (req, res) => {
+router.put("/:id", validateTask, async (req, res, next) => {
   try {
     const { title, description, priority, dueDate, completed } = req.body;
 
@@ -110,17 +103,16 @@ router.put("/:id", async (req, res) => {
     const updatedTask = await task.save();
     res.json(updatedTask);
   } catch (error) {
-    console.error("Update task error:", error);
     if (error.kind === "ObjectId") {
       return res.status(404).json({ message: "Task not found." });
     }
-    res.status(500).json({ message: "Server error while updating the task." });
+    next(error);
   }
 });
 
 // @route   DELETE /api/v1/tasks/:id
 // @desc    Delete single task (owner only)
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const task = await Task.findById(req.params.id);
 
@@ -136,11 +128,10 @@ router.delete("/:id", async (req, res) => {
     await task.deleteOne();
     res.json({ message: "Task deleted successfully." });
   } catch (error) {
-    console.error("Delete task error:", error);
     if (error.kind === "ObjectId") {
       return res.status(404).json({ message: "Task not found." });
     }
-    res.status(500).json({ message: "Server error while deleting the task." });
+    next(error);
   }
 });
 

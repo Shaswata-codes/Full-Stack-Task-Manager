@@ -3,20 +3,16 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const { validateRegister, validateLogin } = require("../middleware/validate");
 
 // JWT Secret Key
 const JWT_SECRET = process.env.JWT_SECRET || "fallbacksecret";
 
 // @route   POST /api/v1/auth/register
 // @desc    Register a new user
-router.post("/register", async (req, res) => {
+router.post("/register", validateRegister, async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
-
-    // Basic validation
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "Please enter all fields." });
-    }
 
     // Check if user exists
     const existingUser = await User.findOne({ email });
@@ -53,21 +49,15 @@ router.post("/register", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Register error:", error);
-    res.status(500).json({ message: "Server error during registration." });
+    next(error);
   }
 });
 
 // @route   POST /api/v1/auth/login
 // @desc    Authenticate user & get token
-router.post("/login", async (req, res) => {
+router.post("/login", validateLogin, async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
-    // Basic validation
-    if (!email || !password) {
-      return res.status(400).json({ message: "Please enter all fields." });
-    }
 
     // Check user
     const user = await User.findOne({ email });
@@ -97,8 +87,7 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Server error during login." });
+    next(error);
   }
 });
 

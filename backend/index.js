@@ -16,6 +16,8 @@ connectDB().catch((err) => {
 
 app.use("/api/v1", require("./src/routes"));
 
+app.use(require("./src/middleware/errorHandler"));
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
