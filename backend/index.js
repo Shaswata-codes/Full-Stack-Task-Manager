@@ -14,7 +14,7 @@ connectDB().catch((err) => {
     process.exit(1);
 });
 
-app.use("/api/v1", require("./src/routes"));
+// app.use("/api/v1", require("./src/routes"));
 
 app.use(require("./src/middleware/errorHandler"));
 
