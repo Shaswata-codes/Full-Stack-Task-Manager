@@ -1,12 +1,19 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const { connectDB } = require("./db.config.js");
+const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
+
+// Connect to Database
+connectDB().catch((err) => {
+  console.error("Database connection failed:", err);
+});
 
 app.use(cors());
 app.use(express.json());
 
-// 👇 Add this line
 app.use("/api/v1", require("./routes"));
 
 app.get("/", (req, res) => {
@@ -16,4 +23,6 @@ app.get("/", (req, res) => {
   });
 });
 
-module.exports = app;
+app.use(errorHandler);
+
+module.exports = app;
