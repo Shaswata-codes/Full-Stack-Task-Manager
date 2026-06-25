@@ -14,8 +14,6 @@ connectDB().catch((err) => {
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/v1", require("./routes"));
-
 app.get("/", (req, res) => {
   res.json({
     status: "success",
@@ -23,6 +21,21 @@ app.get("/", (req, res) => {
   });
 });
 
+// Database connectivity check for all API routes
+app.use((req, res, next) => {
+  const mongoose = require("mongoose");
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      status: "error",
+      message: "Database connection is not established. Please check if MONGO_URI environment variable is configured in Vercel settings."
+    });
+  }
+  next();
+});
+
+app.use("/api/v1", require("./routes"));
+
 app.use(errorHandler);
 
-module.exports = app;
+module.exports = app;
+
