@@ -25,9 +25,12 @@ app.get("/", (req, res) => {
 app.use((req, res, next) => {
   const mongoose = require("mongoose");
   if (mongoose.connection.readyState !== 1) {
+    const { getDbError } = require("./db.config.js");
+    const dbErr = getDbError();
     return res.status(503).json({
       status: "error",
-      message: "Database connection is not established. Please check if MONGO_URI environment variable is configured in Vercel settings."
+      message: "Database connection is not established. Please check if MONGO_URI environment variable is configured in Vercel settings.",
+      error: dbErr ? dbErr.message || String(dbErr) : "Connection is still initializing or was disconnected."
     });
   }
   next();

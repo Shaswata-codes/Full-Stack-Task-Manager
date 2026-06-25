@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+let dbError = null;
+
 exports.connectDB = async () => {
     try {
         if (!process.env.MONGO_URI) {
@@ -7,9 +9,13 @@ exports.connectDB = async () => {
         }
         const db = await mongoose.connect(process.env.MONGO_URI);
         console.log(`MongoDB Connected`);
-
+        dbError = null;
     } catch (error) {
         console.error("MongoDB Connection Failed:", error);
+        dbError = error;
         throw error;
     }
-};
+};
+
+exports.getDbError = () => dbError;
+
