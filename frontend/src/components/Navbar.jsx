@@ -9,22 +9,31 @@ const Navbar = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user')
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser))
-      } catch {
-        setUser({ name: 'User' })
+    const checkUser = () => {
+      const storedUser = localStorage.getItem('user')
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser))
+        } catch {
+          setUser({ name: 'User' })
+        }
+      } else {
+        setUser(null)
       }
     }
+
+    checkUser()
 
     const handleHashChange = () => {
       setCurrentHash(window.location.hash)
     }
 
     window.addEventListener('hashchange', handleHashChange)
+    window.addEventListener('auth-change', checkUser)
+    
     return () => {
       window.removeEventListener('hashchange', handleHashChange)
+      window.removeEventListener('auth-change', checkUser)
     }
   }, [])
 
@@ -33,6 +42,7 @@ const Navbar = () => {
     localStorage.removeItem('user')
     setUser(null)
     setIsOpen(false)
+    window.dispatchEvent(new Event('auth-change'))
     navigate('/login')
   }
 
@@ -56,9 +66,7 @@ const Navbar = () => {
 
   const links = [
     { path: '/', label: 'Dashboard' },
-    { path: '/#tasks-section', label: 'Tasks' },
-    { path: '/analytics', label: 'Analytics' },
-    { path: '/teams', label: 'Teams' },
+    { path: '/#tasks-section', label: 'Tasks' }
   ]
 
   return (
