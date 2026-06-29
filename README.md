@@ -115,8 +115,8 @@ Creates a new account and returns a token.
 - **Request Body**:
   ```json
   {
-    "name": "Jane Doe",
-    "email": "jane@example.com",
+    "name": "Shaswata",
+    "email": "[EMAIL_ADDRESS]",
     "password": "mysecretpassword"
   }
   ```
@@ -126,8 +126,8 @@ Creates a new account and returns a token.
     "token": "eyJhbGciOi...",
     "user": {
       "id": "648a123f...",
-      "name": "Jane Doe",
-      "email": "jane@example.com"
+      "name": "Shaswata",
+      "email": "[EMAIL_ADDRESS]"
     }
   }
   ```
@@ -137,7 +137,7 @@ Logs in an existing user.
 - **Request Body**:
   ```json
   {
-    "email": "jane@example.com",
+    "email": "[EMAIL_ADDRESS]",
     "password": "mysecretpassword"
   }
   ```
