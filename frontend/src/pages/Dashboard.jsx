@@ -20,20 +20,20 @@ const Dashboard = () => {
   const [priority, setPriority] = useState('Medium')
   const [dueDate, setDueDate] = useState('')
 
-  // Toast Notification State
+  
   const [toasts, setToasts] = useState([])
 
-  // Loading States
+  
   const [isLoadingTasks, setIsLoadingTasks] = useState(true)
   const [isSubmittingTask, setIsSubmittingTask] = useState(false)
   const [isUpdatingTask, setIsUpdatingTask] = useState(false)
 
-  // Controls
-  const [filter, setFilter] = useState('All') // 'All', 'Pending', 'Completed'
+  
+  const [filter, setFilter] = useState('All') 
   const [searchQuery, setSearchQuery] = useState('')
-  const [sortBy, setSortBy] = useState('Newest') // 'Newest', 'Oldest', 'Priority', 'DueDate'
+  const [sortBy, setSortBy] = useState('Newest') 
 
-  // Edit Modal State
+  
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [editTaskId, setEditTaskId] = useState('')
   const [editTitle, setEditTitle] = useState('')
@@ -44,7 +44,7 @@ const Dashboard = () => {
 
   const navigate = useNavigate()
 
-  // Helper to add toast notifications
+  
   const addToast = (message, type = 'success') => {
     const id = Date.now()
     setToasts((prev) => [...prev, { id, message, type }])
@@ -53,7 +53,7 @@ const Dashboard = () => {
     }, 3500)
   }
 
-  // Fetch tasks on mount & check authentication
+  
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (!token) {
@@ -71,7 +71,7 @@ const Dashboard = () => {
         })
 
         if (response.status === 401) {
-          // Unauthorized / expired token
+          
           localStorage.removeItem('token')
           localStorage.removeItem('user')
           window.dispatchEvent(new Event('auth-change'))
@@ -95,7 +95,7 @@ const Dashboard = () => {
     fetchTasks()
   }, [navigate])
 
-  // Handle Add Task
+  
   const handleAddTask = async (e) => {
     e.preventDefault()
     if (!newTitle.trim()) {
@@ -138,7 +138,7 @@ const Dashboard = () => {
     }
   }
 
-  // Toggle Completed status
+  
   const handleToggleCompleted = async (task) => {
     const token = localStorage.getItem('token')
     try {
@@ -164,7 +164,7 @@ const Dashboard = () => {
     }
   }
 
-  // Delete single task
+  
   const handleDeleteTask = async (id) => {
     if (!window.confirm('Are you sure you want to delete this task?')) return
     const token = localStorage.getItem('token')
@@ -188,7 +188,7 @@ const Dashboard = () => {
     }
   }
 
-  // Delete all completed tasks
+  
   const handleDeleteAllCompleted = async () => {
     if (!window.confirm('Are you sure you want to delete all completed tasks?')) return
     const token = localStorage.getItem('token')
@@ -212,7 +212,7 @@ const Dashboard = () => {
     }
   }
 
-  // Open Edit Modal
+  
   const openEditModal = (task) => {
     setEditTaskId(task._id)
     setEditTitle(task.title)
@@ -223,7 +223,7 @@ const Dashboard = () => {
     setIsEditModalOpen(true)
   }
 
-  // Save Task Changes from Modal
+  
   const handleUpdateTask = async (e) => {
     e.preventDefault()
     if (!editTitle.trim()) {
@@ -264,7 +264,7 @@ const Dashboard = () => {
     }
   }
 
-  // Date Check for Overdue Tasks
+  
   const isOverdue = (task) => {
     if (task.completed || !task.dueDate) return false
     const today = new Date()
@@ -274,13 +274,13 @@ const Dashboard = () => {
     return taskDate < today
   }
 
-  // Calculate statistics
+  
   const totalTasks = tasks.length
   const completedTasks = tasks.filter((t) => t.completed).length
   const pendingTasks = totalTasks - completedTasks
   const overdueTasksCount = tasks.filter(isOverdue).length
 
-  // Filter Tasks
+  
   const filteredTasks = tasks.filter((task) => {
     if (filter === 'Pending' && task.completed) return false
     if (filter === 'Completed' && !task.completed) return false
@@ -291,7 +291,7 @@ const Dashboard = () => {
     return matchesTitle || matchesDesc
   })
 
-  // Sort Tasks
+  
   const sortedTasks = [...filteredTasks].sort((a, b) => {
     if (sortBy === 'Newest') {
       return new Date(b.createdAt) - new Date(a.createdAt)
@@ -311,7 +311,7 @@ const Dashboard = () => {
     return 0
   })
 
-  // Date Formatter
+  
   const formatDate = (dateString) => {
     if (!dateString) return ''
     const date = new Date(dateString)
@@ -324,7 +324,6 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
-      {/* Toast Notification Container */}
       <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
         {toasts.map((toast) => (
           <div
@@ -352,16 +351,11 @@ const Dashboard = () => {
           </div>
         ))}
       </div>
-
-      {/* Welcome Banner */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Welcome Back!</h1>
         <p className="text-gray-500 mt-1">Here is a real-time summary of your tasks.</p>
       </div>
-
-      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {/* Total Tasks Card */}
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-500">Total Tasks</p>
@@ -371,8 +365,6 @@ const Dashboard = () => {
             <FiList className="w-6 h-6" />
           </div>
         </div>
-
-        {/* Completed Card */}
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-500">Completed Tasks</p>
@@ -382,8 +374,6 @@ const Dashboard = () => {
             <FiCheckCircle className="w-6 h-6" />
           </div>
         </div>
-
-        {/* Pending Card */}
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-500">Pending Tasks</p>
@@ -393,8 +383,6 @@ const Dashboard = () => {
             <FiClock className="w-6 h-6" />
           </div>
         </div>
-
-        {/* Overdue Card */}
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-500">Overdue Tasks</p>
@@ -405,10 +393,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-
-      {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Checklist */}
         <div id="tasks-section" className="lg:col-span-2 bg-white border border-gray-200 rounded-xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900">Task Checklist</h2>
@@ -422,10 +407,7 @@ const Dashboard = () => {
               </button>
             )}
           </div>
-
-          {/* Filtering, Searching, Sorting Controls */}
           <div className="flex flex-col sm:flex-row gap-4 mb-6 pb-6 border-b border-gray-100">
-            {/* Search */}
             <div className="relative flex-1">
               <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                 <FiSearch className="w-4 h-4" />
@@ -438,8 +420,6 @@ const Dashboard = () => {
                 className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:border-indigo-500"
               />
             </div>
-
-            {/* Filter buttons */}
             <div className="flex border border-gray-300 rounded-lg p-0.5 bg-gray-50/50 self-start sm:self-auto">
               {['All', 'Pending', 'Completed'].map((status) => (
                 <button
@@ -455,8 +435,6 @@ const Dashboard = () => {
                 </button>
               ))}
             </div>
-
-            {/* Sort dropdown */}
             <div className="flex items-center gap-2">
               <label htmlFor="sort-dropdown" className="text-xs font-medium text-gray-500 whitespace-nowrap">Sort:</label>
               <select
@@ -472,8 +450,6 @@ const Dashboard = () => {
               </select>
             </div>
           </div>
-
-          {/* Task Items / Skeleton Loader */}
           {isLoadingTasks ? (
             <div className="space-y-3">
               {[1, 2, 3].map((n) => (
@@ -529,8 +505,6 @@ const Dashboard = () => {
                         >
                           {task.title}
                         </span>
-
-                        {/* Priority Badge */}
                         <span
                           className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                             task.priority === 'High'
@@ -542,8 +516,6 @@ const Dashboard = () => {
                         >
                           {task.priority}
                         </span>
-
-                        {/* Overdue Badge */}
                         {isOverdue(task) && (
                           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-600 text-white flex items-center gap-0.5 animate-pulse">
                             <FiAlertCircle className="w-2.5 h-2.5" />
@@ -551,8 +523,6 @@ const Dashboard = () => {
                           </span>
                         )}
                       </div>
-
-                      {/* Description */}
                       {task.description && (
                         <p
                           className={`text-xs mt-1 leading-relaxed ${
@@ -562,8 +532,6 @@ const Dashboard = () => {
                           {task.description}
                         </p>
                       )}
-
-                      {/* Due Date Indicator */}
                       {task.dueDate && (
                         <div className="flex items-center gap-1.5 mt-2 text-[11px] text-gray-500">
                           <FiCalendar className="w-3.5 h-3.5" />
@@ -574,8 +542,6 @@ const Dashboard = () => {
                       )}
                     </div>
                   </div>
-
-                  {/* Actions */}
                   <div className="flex items-center gap-2 mt-4 sm:mt-0 self-end sm:self-auto border-t sm:border-t-0 border-gray-100 pt-3 sm:pt-0 pl-3 sm:pl-0">
                     <button
                       onClick={() => openEditModal(task)}
@@ -597,8 +563,6 @@ const Dashboard = () => {
             </div>
           )}
         </div>
-
-        {/* Input Form */}
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 h-fit sticky top-20">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Add New Task</h2>
           <form onSubmit={handleAddTask} className="space-y-4">
@@ -685,8 +649,6 @@ const Dashboard = () => {
           </form>
         </div>
       </div>
-
-      {/* Edit Task Modal */}
       {isEditModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-xs transition-opacity">
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-lg w-full p-6 relative animate-in fade-in zoom-in-95 duration-200">
@@ -759,8 +721,6 @@ const Dashboard = () => {
                   />
                 </div>
               </div>
-
-              {/* Completion status checkbox in modal */}
               <div className="flex items-center gap-2 py-2">
                 <input
                   id="edit-completed"

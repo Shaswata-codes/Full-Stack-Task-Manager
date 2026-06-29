@@ -53,7 +53,6 @@ const Navbar = () => {
       if (window.location.pathname === '/') {
         document.getElementById('tasks-section')?.scrollIntoView({ behavior: 'smooth' })
         window.history.pushState(null, '', '#tasks-section')
-        // Force state update since history.pushState doesn't trigger hashchange event automatically
         setCurrentHash('#tasks-section')
       } else {
         navigate('/#tasks-section')
@@ -74,7 +73,6 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           
-          {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-2 font-bold text-xl text-gray-900">
               <FiCheckSquare className="w-6 h-6 text-indigo-600" />
@@ -82,7 +80,6 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Desktop links */}
           <div className="hidden md:flex items-center space-x-6">
             {links.map((link) => (
               <NavLink
@@ -103,7 +100,6 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Desktop Auth */}
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
               <div className="flex items-center space-x-4">
@@ -130,7 +126,6 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
           <div className="flex items-center md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -143,7 +138,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 py-2 px-4 space-y-1">
           {links.map((link) => (

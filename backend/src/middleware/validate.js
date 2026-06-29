@@ -9,7 +9,6 @@ const validateRegister = (req, res, next) => {
     return res.status(400).json({ message: "Email is required." });
   }
 
-  // Simple email regex validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ message: "Please enter a valid email address." });
@@ -39,7 +38,6 @@ const validateLogin = (req, res, next) => {
 const validateTask = (req, res, next) => {
   const { title, priority } = req.body;
 
-  // Title is required on POST (or PUT if specified)
   if (req.method === "POST" && (!title || !title.trim())) {
     return res.status(400).json({ message: "Task title is required." });
   }

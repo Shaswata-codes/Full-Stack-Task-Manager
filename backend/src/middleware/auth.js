@@ -10,7 +10,6 @@ const auth = (req, res, next) => {
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallbacksecret");
     
-    // Attach decoded user info (id, name, email) to the request object
     req.user = decoded;
     next();
   } catch (error) {

@@ -14,7 +14,6 @@ const Register = () => {
     e.preventDefault()
     setError('')
 
-    // Basic validation
     if (!name.trim() || !email.trim() || !password || !confirmPassword) {
       setError('All fields are required.')
       return
@@ -46,14 +45,11 @@ const Register = () => {
         throw new Error(data.message || 'Registration failed.')
       }
 
-      // Save token and user info
       localStorage.setItem('token', data.token)
       localStorage.setItem('user', JSON.stringify(data.user))
 
-      // Notify Navbar and other components of auth change
       window.dispatchEvent(new Event('auth-change'))
 
-      // Redirect to Dashboard
       navigate('/')
     } catch (err) {
       setError(err.message)
@@ -66,7 +62,6 @@ const Register = () => {
     <div className="min-h-[80vh] flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl border border-gray-200 shadow-sm">
         
-        {/* Title / Heading */}
         <div className="text-center">
           <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
             Create your account
@@ -76,14 +71,12 @@ const Register = () => {
           </p>
         </div>
 
-        {/* Error Alert */}
         {error && (
           <div className="bg-rose-50 border border-rose-100 text-rose-600 rounded-lg p-3 text-sm">
             {error}
           </div>
         )}
 
-        {/* Form */}
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="name-input" className="block text-sm font-medium text-gray-700 mb-1">
@@ -154,7 +147,6 @@ const Register = () => {
           </button>
         </form>
 
-        {/* Login Link */}
         <div className="text-center mt-4">
           <p className="text-sm text-gray-500">
             Already have an account?{' '}

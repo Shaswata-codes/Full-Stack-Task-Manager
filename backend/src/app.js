@@ -6,7 +6,6 @@ const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
-// Connect to Database
 connectDB().catch((err) => {
   console.error("Database connection failed:", err);
 });
@@ -21,7 +20,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// Middleware to ensure database is connected before processing API requests
 app.use(async (req, res, next) => {
   try {
     await connectDB();

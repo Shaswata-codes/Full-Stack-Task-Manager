@@ -4,11 +4,8 @@ const Task = require("../models/Task");
 const auth = require("../middleware/auth");
 const { validateTask } = require("../middleware/validate");
 
-// All routes in this file are protected by auth middleware
 router.use(auth);
 
-// @route   POST /api/v1/tasks
-// @desc    Create a new task
 router.post("/", validateTask, async (req, res, next) => {
   try {
     const { title, description, priority, dueDate, completed } = req.body;
@@ -19,7 +16,7 @@ router.post("/", validateTask, async (req, res, next) => {
       priority: priority || "Medium",
       dueDate: dueDate || null,
       completed: completed || false,
-      owner: req.user.id, // from auth middleware
+      owner: req.user.id,
     });
 
     const savedTask = await newTask.save();
@@ -29,8 +26,6 @@ router.post("/", validateTask, async (req, res, next) => {
   }
 });
 
-// @route   GET /api/v1/tasks
-// @desc    Fetch all tasks of logged-in user
 router.get("/", async (req, res, next) => {
   try {
     const tasks = await Task.find({ owner: req.user.id }).sort({ createdAt: -1 });
@@ -40,9 +35,6 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// @route   DELETE /api/v1/tasks/completed
-// @desc    Delete all completed tasks of logged-in user
-// Note: Registered before GET /:id and DELETE /:id to prevent route param hijacking
 router.delete("/completed", async (req, res, next) => {
   try {
     const result = await Task.deleteMany({ owner: req.user.id, completed: true });
@@ -52,8 +44,6 @@ router.delete("/completed", async (req, res, next) => {
   }
 });
 
-// @route   GET /api/v1/tasks/:id
-// @desc    Fetch single task by ID
 router.get("/:id", async (req, res, next) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -62,7 +52,6 @@ router.get("/:id", async (req, res, next) => {
       return res.status(404).json({ message: "Task not found." });
     }
 
-    // Verify ownership
     if (task.owner.toString() !== req.user.id) {
       return res.status(403).json({ message: "Not authorized to view this task." });
     }
@@ -76,8 +65,6 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-// @route   PUT /api/v1/tasks/:id
-// @desc    Update a task (owner only)
 router.put("/:id", validateTask, async (req, res, next) => {
   try {
     const { title, description, priority, dueDate, completed } = req.body;
@@ -88,12 +75,10 @@ router.put("/:id", validateTask, async (req, res, next) => {
       return res.status(404).json({ message: "Task not found." });
     }
 
-    // Verify ownership
     if (task.owner.toString() !== req.user.id) {
       return res.status(403).json({ message: "Not authorized to update this task." });
     }
 
-    // Update fields
     if (title !== undefined) task.title = title;
     if (description !== undefined) task.description = description;
     if (priority !== undefined) task.priority = priority;
@@ -110,8 +95,6 @@ router.put("/:id", validateTask, async (req, res, next) => {
   }
 });
 
-// @route   DELETE /api/v1/tasks/:id
-// @desc    Delete single task (owner only)
 router.delete("/:id", async (req, res, next) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -120,7 +103,6 @@ router.delete("/:id", async (req, res, next) => {
       return res.status(404).json({ message: "Task not found." });
     }
 
-    // Verify ownership
     if (task.owner.toString() !== req.user.id) {
       return res.status(403).json({ message: "Not authorized to delete this task." });
     }
